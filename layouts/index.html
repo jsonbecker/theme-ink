@@ -7,12 +7,15 @@
 
 		<div class="recent-posts section">
 			<div class="posts">
-				{{ $pages := where .Site.Pages.ByDate.Reverse "Type" "post" }}
-				{{ $paginator := .Paginate (where $pages "Params.hidden" "ne" true) }}
-				{{ range $paginator.Pages }}
+				{{ $posts := where site.RegularPages "Type" "post" }}
+                                {{ $grouped := $posts.GroupByDate "2006-01-02" }}
+                                {{ $paginated := (.Paginate ($grouped)) -}}
+				{{ range $paginated.PageGroups }}
+				  {{ range .Pages.Reverse }}
 					<div class="post">
 						{{ partial "post-preview.html" . }}
 					</div>
+				  {{ end }}
 				{{ end }}
 				{{ template "partials/paginator.html" . }}
 			</div>
